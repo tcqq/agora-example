@@ -1,3 +1,4 @@
+[![API](https://img.shields.io/badge/API-24%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=24)
 [![Licence](https://img.shields.io/badge/Licence-Apache2-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
 AgoraExample
@@ -8,7 +9,7 @@ This project is a simple demonstration of using the Agora SDK to implement basic
 Screenshots
 -----------
 
-![One](/screenshots/1.png)
+![1](/screenshots/1.jpg)
 
 License
 -------
