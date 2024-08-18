@@ -8,7 +8,7 @@ This project is a simple demonstration of using the Agora SDK to implement basic
 Screenshots
 -----------
 
-![One](/screenshots/1.png)
+![1](/screenshots/1.jpg)
 
 License
 -------
