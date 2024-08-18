@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Agora Audio</string>
+    <string name="permission_reason">应用需要这些权限来提供完整的功能</string>
+    <string name="permission_settings">请在设置中手动开启权限，以继续使用全部功能</string>
+    <string name="confirm">确认</string>
+    <string name="cancel">取消</string>
+    <string name="join_channel">加入频道</string>
+    <string name="leave_channel">离开频道</string>
+    <string name="mute">麦克风静音</string>
+    <string name="unmute">取消静音</string>
+    <string name="speaker">扬声器</string>
+    <string name="earpiece">听筒</string>
+    <string name="channel_name_hint">频道名称</string>
+    <string name="current_user_list">当前用户列表</string>
+</resources>

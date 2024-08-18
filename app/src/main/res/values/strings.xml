@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Agora Example</string>
+    <string name="permission_reason">The app requires these permissions to provide full functionality.</string>
+    <string name="permission_settings">Please enable the necessary permissions in the settings manually to continue using all features.</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="join_channel">Join Channel</string>
+    <string name="leave_channel">Leave Channel</string>
+    <string name="mute">Mute Microphone</string>
+    <string name="unmute">Unmute Microphone</string>
+    <string name="speaker">Speaker</string>
+    <string name="earpiece">Earpiece</string>
+    <string name="channel_name_hint">Channel Name</string>
+    <string name="current_user_list">Current User List</string>
+</resources>

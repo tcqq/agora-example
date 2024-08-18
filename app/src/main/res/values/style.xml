@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="ToolbarStyle" parent="Widget.Material3.Toolbar.Surface">
+        <item name="navigationIcon">@drawable/ic_arrow_back_black_24dp</item>
+    </style>
+
+    <style name="ActionOverflowButtonStyle" parent="Widget.AppCompat.ActionButton.Overflow">
+        <item name="tint">@android:color/black</item>
+    </style>
+
+    <style name="TextInputLayoutStyle" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="prefixTextAppearance">?attr/textAppearanceSubtitle1</item>
+        <item name="boxStrokeColor">@color/box_stroke_color_selector</item>
+        <item name="android:textColorHint">@color/secondary_color</item>
+    </style>
+
+    <style name="TextInputLayoutExposedDropdownIcon">
+        <item name="endIconMode">custom</item>
+        <item name="endIconDrawable">@drawable/ic_arrow_drop_down_black_24dp</item>
+        <item name="endIconTint">@color/secondary_color</item>
+    </style>
+
+    <style name="ExposedDropdownMenuStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="boxStrokeColor">@color/box_stroke_color_selector</item>
+    </style>
+
+</resources>
