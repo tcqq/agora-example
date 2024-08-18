@@ -66,7 +66,7 @@
                                 android:id="@+id/channel_name"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="频道名称" />
+                                android:hint="@string/channel_name_hint" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 
