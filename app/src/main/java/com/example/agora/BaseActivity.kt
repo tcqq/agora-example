@@ -170,6 +170,68 @@ abstract class BaseActivity : AppCompatActivity() {
             }
     }
 
+    // 请求视频通话所需的权限
+    fun requestVideoPermissions(onAllPermissionsGranted: () -> Unit) {
+        val videoPermissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arrayOf(
+                Manifest.permission.CAMERA,
+                Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.READ_MEDIA_VIDEO
+            )
+        } else {
+            arrayOf(
+                Manifest.permission.CAMERA,
+                Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            )
+        }
+
+        val notificationPermissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arrayOf(Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            emptyArray()
+        }
+
+        val bluetoothPermissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            arrayOf(Manifest.permission.BLUETOOTH_CONNECT)
+        } else {
+            emptyArray()
+        }
+
+        // 合并所有需要的权限
+        val allPermissions = videoPermissions + notificationPermissions + bluetoothPermissions
+
+        PermissionX.init(this)
+            .permissions(*allPermissions)
+            .explainReasonBeforeRequest()
+            .onExplainRequestReason { scope, deniedList ->
+                scope.showRequestReasonDialog(
+                    deniedList,
+                    getString(R.string.permission_reason),
+                    getString(R.string.confirm),
+                    getString(R.string.cancel)
+                )
+            }
+            .onForwardToSettings { scope, deniedList ->
+                scope.showForwardToSettingsDialog(
+                    deniedList,
+                    getString(R.string.permission_settings),
+                    getString(R.string.confirm),
+                    getString(R.string.cancel)
+                )
+            }
+            .request { allGranted, grantedList, deniedList ->
+                if (allGranted) {
+                    onAllPermissionsGranted()
+                    Timber.d("所有权限已授予")
+                } else {
+                    Timber.d("以下权限被拒绝: $deniedList")
+                }
+            }
+    }
+
+
+
     companion object {
         const val EMPTY_MENU_RES_ID = -1
     }

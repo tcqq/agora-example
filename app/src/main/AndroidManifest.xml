@@ -34,6 +34,10 @@
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
+    <!-- Add new media permissions for devices running Android 13 and above -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+
     <uses-sdk tools:overrideLibrary="com.softsugar.hardwarebuffer" />
 
     <application
@@ -61,7 +65,7 @@
         </activity>
 
         <activity android:name=".AgoraAudioActivity" />
-
+        <activity android:name=".AgoraVideoActivity" />
     </application>
 
 </manifest>

@@ -26,6 +26,7 @@ class MainActivity : BaseActivity() {
 
         binding.agoraVideo.setOnClickListener {
             showToast("agoraVideo")
+            startActivity(Intent(this, AgoraVideoActivity::class.java))
         }
     }
 }
