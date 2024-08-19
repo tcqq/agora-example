@@ -31,6 +31,7 @@ class AgoraVideoActivity : BaseActivity() {
     private var isCameraOn = true // 摄像头开关状态，初始为开启
     private val userIds = mutableListOf<Int>() // 存储当前频道的用户ID
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_agora_video1)
@@ -51,14 +52,16 @@ class AgoraVideoActivity : BaseActivity() {
         binding.muteButton.setOnClickListener {
             isMuted = !isMuted
             engine?.muteLocalAudioStream(isMuted)
-            binding.muteButton.text = if (isMuted) getString(R.string.unmute) else getString(R.string.mute)
+            binding.muteButton.text =
+                if (isMuted) getString(R.string.unmute) else getString(R.string.mute)
         }
 
         // 切换扬声器
         binding.speakerButton.setOnClickListener {
             isSpeakerOn = !isSpeakerOn
             engine?.setEnableSpeakerphone(isSpeakerOn)
-            binding.speakerButton.text = if (isSpeakerOn) getString(R.string.earpiece) else getString(R.string.speaker)
+            binding.speakerButton.text =
+                if (isSpeakerOn) getString(R.string.earpiece) else getString(R.string.speaker)
         }
 
         // 切换摄像头
@@ -66,12 +69,14 @@ class AgoraVideoActivity : BaseActivity() {
             engine?.switchCamera()
         }
 
-        // 新增的摄像头开关按钮
+        // 切换摄像头开关
         binding.cameraToggleButton.setOnClickListener {
-            toggleCamera() // 调用切换摄像头开关的方法
+            toggleCamera()
         }
 
-        initializeAgoraEngine()
+        requestVideoPermissions {
+            initAgoraEngine()
+        }
     }
 
     private fun toggleCamera() {
@@ -81,18 +86,25 @@ class AgoraVideoActivity : BaseActivity() {
             val surfaceView = SurfaceView(this).apply { setZOrderMediaOverlay(true) }
             binding.flLocal.removeAllViews()  // 清除之前的视图
             binding.flLocal.addView(surfaceView)  // 添加新的SurfaceView
-            engine?.setupLocalVideo(VideoCanvas(surfaceView, VideoCanvas.RENDER_MODE_HIDDEN, 0))  // 设置本地视频
+            engine?.setupLocalVideo(
+                VideoCanvas(
+                    surfaceView,
+                    VideoCanvas.RENDER_MODE_HIDDEN,
+                    0
+                )
+            )  // 设置本地视频
             engine?.startPreview()  // 启动本地预览
         } else {
             engine?.disableVideo()  // 关闭视频
             binding.flLocal.removeAllViews()  // 移除视图，保留黑屏
         }
         // 更新按钮文本
-        binding.cameraToggleButton.text = if (isCameraOn) getString(R.string.camera_off) else getString(R.string.camera_on)
+        binding.cameraToggleButton.text =
+            if (isCameraOn) getString(R.string.camera_off) else getString(R.string.camera_on)
     }
 
 
-    private fun initializeAgoraEngine() {
+    private fun initAgoraEngine() {
         try {
             val config = RtcEngineConfig().apply {
                 mContext = applicationContext
@@ -157,7 +169,11 @@ class AgoraVideoActivity : BaseActivity() {
             runOnUiThread {
                 userIds.add(uid)
                 updateUserList()
-                Toast.makeText(this@AgoraVideoActivity, getString(R.string.join_channel) + " $channel", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@AgoraVideoActivity,
+                    getString(R.string.join_channel) + " $channel",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
@@ -175,7 +191,13 @@ class AgoraVideoActivity : BaseActivity() {
                 binding.flRemote.addView(surfaceView)
 
                 // 设置远程视频画布
-                engine?.setupRemoteVideo(VideoCanvas(surfaceView, VideoCanvas.RENDER_MODE_HIDDEN, uid))
+                engine?.setupRemoteVideo(
+                    VideoCanvas(
+                        surfaceView,
+                        VideoCanvas.RENDER_MODE_HIDDEN,
+                        uid
+                    )
+                )
             }
         }
 
@@ -186,7 +208,11 @@ class AgoraVideoActivity : BaseActivity() {
                     userIds.remove(uid)  // 移除用户
                     updateUserList()
 
-                    Toast.makeText(this@AgoraVideoActivity, getString(R.string.leave_channel), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@AgoraVideoActivity,
+                        getString(R.string.leave_channel),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
                 remoteUid = 0
                 Log.d("Agora", "Remote User Offline with UID $uid")
