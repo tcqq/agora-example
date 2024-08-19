@@ -12,4 +12,5 @@
     <string name="earpiece">Earpiece</string>
     <string name="channel_name_hint">Channel Name</string>
     <string name="current_user_list">Current User List</string>
+    <string name="switch_camera">Switch Camera</string>
 </resources>

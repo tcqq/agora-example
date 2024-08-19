@@ -3,9 +3,10 @@ package com.example.agora
 import android.os.Bundle
 import android.util.Log
 import android.view.SurfaceView
+import android.view.View
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
-import com.example.agora.databinding.ActivityAgoraVideoBinding
+import com.example.agora.databinding.ActivityAgoraVideo1Binding
 import io.agora.rtc2.ChannelMediaOptions
 import io.agora.rtc2.Constants
 import io.agora.rtc2.IRtcEngineEventHandler
@@ -20,23 +21,48 @@ import kotlin.math.abs
  */
 class AgoraVideoActivity : BaseActivity() {
 
-    private lateinit var binding: ActivityAgoraVideoBinding
+    private lateinit var binding: ActivityAgoraVideo1Binding
     private var engine: RtcEngine? = null
     private var myUid = 0
     private var remoteUid = 0
     private var joined = false
+    private var isMuted = false // 麦克风静音状态
+    private var isSpeakerOn = false // 扬声器状态
+    private val userIds = mutableListOf<Int>() // 存储当前频道的用户ID
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_agora_video)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_agora_video1)
+        setActionBar(binding.toolbar)
+        setActionBarTitle("Agora Video")
 
-        binding.btnJoin.setOnClickListener {
+        // 加入频道
+        binding.joinButton.setOnClickListener {
             if (!joined) {
-                val channelId = binding.etChannel.text.toString()
+                val channelId = binding.channelName.text.toString()
                 joinChannel(channelId)
             } else {
                 leaveChannel()
             }
+        }
+
+        // 切换麦克风静音
+        binding.muteButton.setOnClickListener {
+            isMuted = !isMuted
+            engine?.muteLocalAudioStream(isMuted)
+            binding.muteButton.text = if (isMuted) getString(R.string.unmute) else getString(R.string.mute)
+        }
+
+        // 切换扬声器
+        binding.speakerButton.setOnClickListener {
+            isSpeakerOn = !isSpeakerOn
+            engine?.setEnableSpeakerphone(isSpeakerOn)
+            binding.speakerButton.text = if (isSpeakerOn) getString(R.string.earpiece) else getString(R.string.speaker)
+        }
+
+        // 切换摄像头
+        binding.switchCameraButton.setOnClickListener {
+            engine?.switchCamera()
         }
 
         initializeAgoraEngine()
@@ -51,15 +77,12 @@ class AgoraVideoActivity : BaseActivity() {
                 mEventHandler = iRtcEngineEventHandler
             }
             engine = RtcEngine.create(config)
-            // 启用视频功能
-            engine?.enableVideo()
+            engine?.enableVideo()  // 启用视频功能
         } catch (e: Exception) {
             e.printStackTrace()
             finish()
         }
     }
-
-
 
     private fun joinChannel(channelId: String) {
         val surfaceView = SurfaceView(this).apply { setZOrderMediaOverlay(true) }
@@ -81,19 +104,26 @@ class AgoraVideoActivity : BaseActivity() {
                 showError(RtcEngine.getErrorDescription(abs(res!!)))
             } else {
                 joined = true
-                binding.btnJoin.text = "离开"
+                binding.joinButton.text = getString(R.string.leave_channel)
                 engine?.startPreview()  // 启动本地预览
             }
         }
     }
 
-
     private fun leaveChannel() {
         engine?.leaveChannel()
         engine?.stopPreview()
+        userIds.clear() // 清除所有用户ID
+        updateUserList() // 更新用户列表显示
         remoteUid = 0
         joined = false
-        binding.btnJoin.text = "加入"
+        binding.joinButton.text = getString(R.string.join_channel)
+    }
+
+    private fun updateUserList() {
+        val userListText = userIds.joinToString(separator = "\n") { "User ID: $it" }
+        binding.userList.text = if (userListText.isEmpty()) "" else userListText
+        binding.userList.visibility = if (userIds.isEmpty()) View.GONE else View.VISIBLE
     }
 
     private val iRtcEngineEventHandler = object : IRtcEngineEventHandler() {
@@ -101,7 +131,9 @@ class AgoraVideoActivity : BaseActivity() {
             myUid = uid
             Log.d("Agora", "Joined Channel $channel with UID $uid")
             runOnUiThread {
-                Toast.makeText(this@AgoraVideoActivity, "Joined Channel $channel with UID $uid", Toast.LENGTH_SHORT).show()
+                userIds.add(uid)
+                updateUserList()
+                Toast.makeText(this@AgoraVideoActivity, getString(R.string.join_channel) + " $channel", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -110,22 +142,27 @@ class AgoraVideoActivity : BaseActivity() {
             Log.d("Agora", "Remote User Joined with UID $uid")
 
             runOnUiThread {
+                userIds.add(uid)  // 添加新用户到列表
+                updateUserList()
+
                 val surfaceView = SurfaceView(this@AgoraVideoActivity)
-                surfaceView.setZOrderMediaOverlay(true)  // 确保在其他视图上层显示
-                binding.flRemote.removeAllViews() // 清除之前的视图
-                binding.flRemote.addView(surfaceView) // 添加远程视频的SurfaceView
+                surfaceView.setZOrderMediaOverlay(true)
+                binding.flRemote.removeAllViews()
+                binding.flRemote.addView(surfaceView)
 
                 // 设置远程视频画布
                 engine?.setupRemoteVideo(VideoCanvas(surfaceView, VideoCanvas.RENDER_MODE_HIDDEN, uid))
             }
         }
 
-
         override fun onUserOffline(uid: Int, reason: Int) {
             if (uid == remoteUid) {
                 runOnUiThread {
-                    binding.flRemote.removeAllViews() // 移除远程用户的视图
-                    Toast.makeText(this@AgoraVideoActivity, "Remote user offline", Toast.LENGTH_SHORT).show()
+                    binding.flRemote.removeAllViews()
+                    userIds.remove(uid)  // 移除用户
+                    updateUserList()
+
+                    Toast.makeText(this@AgoraVideoActivity, getString(R.string.leave_channel), Toast.LENGTH_SHORT).show()
                 }
                 remoteUid = 0
                 Log.d("Agora", "Remote User Offline with UID $uid")
@@ -137,7 +174,6 @@ class AgoraVideoActivity : BaseActivity() {
             Log.d("Agora", "Left Channel")
         }
     }
-
 
     private fun showError(message: String) {
         Log.e("Agora", "Error: $message")

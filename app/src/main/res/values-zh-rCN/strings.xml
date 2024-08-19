@@ -13,4 +13,5 @@
     <string name="earpiece">听筒</string>
     <string name="channel_name_hint">频道名称</string>
     <string name="current_user_list">当前用户列表</string>
+    <string name="switch_camera">切换摄像头</string>
 </resources>
