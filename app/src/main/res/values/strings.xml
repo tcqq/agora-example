@@ -13,4 +13,6 @@
     <string name="channel_name_hint">Channel Name</string>
     <string name="current_user_list">Current User List</string>
     <string name="switch_camera">Switch Camera</string>
+    <string name="camera_on">Camera On</string>
+    <string name="camera_off">Camera Off</string>
 </resources>

@@ -38,10 +38,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginStart="16dp"
-                        android:animateLayoutChanges="true"
                         android:layout_marginTop="16dp"
                         android:layout_marginEnd="16dp"
                         android:layout_marginBottom="20dp"
+                        android:animateLayoutChanges="true"
                         android:orientation="vertical">
 
                         <TextView
@@ -49,10 +49,10 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="16dp"
+                            android:text="@string/current_user_list"
                             android:textAppearance="?attr/textAppearanceBody1"
                             android:textSize="16sp"
                             android:visibility="gone"
-                            android:text="@string/current_user_list"
                             tools:visibility="visible" />
 
                         <androidx.constraintlayout.widget.ConstraintLayout
@@ -87,9 +87,9 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <com.google.android.material.textfield.TextInputLayout
-                            android:layout_marginTop="16dp"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/channel_name"
@@ -130,6 +130,14 @@
                             android:layout_gravity="end"
                             android:layout_marginTop="8dp"
                             android:text="@string/switch_camera" />
+
+                        <Button
+                            android:id="@+id/camera_toggle_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:layout_marginTop="8dp"
+                            android:text="@string/camera_off" />
 
                     </LinearLayout>
 

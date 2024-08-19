@@ -28,6 +28,7 @@ class AgoraVideoActivity : BaseActivity() {
     private var joined = false
     private var isMuted = false // 麦克风静音状态
     private var isSpeakerOn = false // 扬声器状态
+    private var isCameraOn = true // 摄像头开关状态，初始为开启
     private val userIds = mutableListOf<Int>() // 存储当前频道的用户ID
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,8 +66,31 @@ class AgoraVideoActivity : BaseActivity() {
             engine?.switchCamera()
         }
 
+        // 新增的摄像头开关按钮
+        binding.cameraToggleButton.setOnClickListener {
+            toggleCamera() // 调用切换摄像头开关的方法
+        }
+
         initializeAgoraEngine()
     }
+
+    private fun toggleCamera() {
+        isCameraOn = !isCameraOn
+        if (isCameraOn) {
+            engine?.enableVideo()  // 开启视频
+            val surfaceView = SurfaceView(this).apply { setZOrderMediaOverlay(true) }
+            binding.flLocal.removeAllViews()  // 清除之前的视图
+            binding.flLocal.addView(surfaceView)  // 添加新的SurfaceView
+            engine?.setupLocalVideo(VideoCanvas(surfaceView, VideoCanvas.RENDER_MODE_HIDDEN, 0))  // 设置本地视频
+            engine?.startPreview()  // 启动本地预览
+        } else {
+            engine?.disableVideo()  // 关闭视频
+            binding.flLocal.removeAllViews()  // 移除视图，保留黑屏
+        }
+        // 更新按钮文本
+        binding.cameraToggleButton.text = if (isCameraOn) getString(R.string.camera_off) else getString(R.string.camera_on)
+    }
+
 
     private fun initializeAgoraEngine() {
         try {
